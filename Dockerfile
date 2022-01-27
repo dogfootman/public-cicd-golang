@@ -1,13 +1,12 @@
-FROM golang:1.16-alpine as prod
+FROM golang:1.16.4-buster AS builder
 
-WORKDIR /app
+ARG VERSION=dev
 
-COPY go.mod ./
-COPY *.go ./
+WORKDIR /go/src/app
+COPY main.go .
+RUN go build -o main -ldflags=-X=main.version=${VERSION} main.go
 
-RUN go mod download
-RUN go build -o /docker-go-image-noman
-
-EXPOSE 8088
-
-CMD ["/docker-go-image-noman"]
+FROM debian:buster-slim
+COPY --from=builder /go/src/app/main /go/bin/main
+ENV PATH="/go/bin:${PATH}"
+CMD ["main"]
