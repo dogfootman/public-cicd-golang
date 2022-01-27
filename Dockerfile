@@ -1,16 +1,13 @@
 FROM golang:1.16-alpine as prod
 
-WORKDIR /go/src/github.com/public-cicd-golang 
-COPY . .
+WORKDIR /app
 
-#RUN apk update && apk add git
-#RUN apk add --no-cache bash
-RUN apk update
-RUN apk add --no-cache bash git gcc
+COPY go.mod ./
+COPY *.go ./
 
-ENV GO111MODULE on
-RUN go get github.com/cespare/reflex
+RUN go mod download
+RUN go build -o /docker-go-image-noman
 
-EXPOSE 1234
+EXPOSE 8088
 
-CMD reflex -r '\.(html|go)' -s go run main.go
+CMD ["/docker-go-image-noman"]
