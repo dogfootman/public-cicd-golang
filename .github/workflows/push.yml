@@ -41,7 +41,8 @@ jobs:
         run: |
           echo VERSION_TAG=$(echo ${{ steps.version_step.outputs.version_tag }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
           echo LASTEST_TAG=$(echo ${{ steps.version_step.outputs.latest_tag  }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
-          echo VERSION_TAG | ' ' | LASTEST_TAG
+          echo 'ev--' | ${{env.VERSION_TAG}} | ' ' | ${{env.LASTEST_TAG}}
+          echo 'aa--' | ${{steps.version_step.outputs.version}}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
